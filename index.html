@@ -1,150 +1,366 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ee4d2d">
 
-  <title>Calculadora Shopee & Dogama</title>
-
-  <!-- Manifest -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#ee4d2d">
-
-  <!-- Ícone fallback -->
-  <link rel="icon" href="icon-192.png">
-
-  <!-- Estilo simples -->
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f5f5f5;
-    }
-
-    header {
-      background: #ee4d2d;
-      color: #fff;
-      padding: 16px;
-      text-align: center;
-      font-weight: bold;
-      font-size: 18px;
-    }
-
-    .container {
-      padding: 16px;
-      max-width: 480px;
-      margin: auto;
-    }
-
-    .box {
-      background: #fff;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    }
-
-    .box h3 {
-      margin: 0 0 10px;
-      font-size: 15px;
-      color: #333;
-    }
-
-    label {
-      font-size: 13px;
-      color: #555;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 4px;
-      margin-bottom: 12px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 15px;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      background: #ee4d2d;
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .result {
-      text-align: center;
-      font-size: 22px;
-      font-weight: bold;
-      color: #1a7f37;
-    }
-
-    footer {
-      text-align: center;
-      font-size: 11px;
-      color: #888;
-      margin-top: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Shopee & Dogama</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+        .shopee-brand { color: #ee4d2d; }
+        .shopee-bg { background-color: #ee4d2d; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .strategy-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .strategy-btn.active {
+            background-color: #ee4d2d;
+            color: white;
+            box-shadow: 0 4px 12px rgba(238, 77, 45, 0.3);
+            transform: translateY(-2px);
+        }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade { animation: fadeIn 0.5s ease-out forwards; }
+    </style>
 </head>
+<body class="min-h-screen pb-20">
+    <div class="max-w-5xl mx-auto px-6 pt-12">
+        
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+            <div>
+                <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">
+                    Calculadora <span class="shopee-brand">Shopee & Dogama</span>
+                </h1>
+                <p class="text-slate-500 font-medium mt-1">Detalhamento Completo de Custos e Lucro.</p>
+            </div>
+            <div class="flex items-center gap-4 bg-white px-5 py-3 rounded-2xl shadow-sm border border-slate-100">
+                <div class="text-right">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Moeda Local</p>
+                    <p class="text-emerald-600 font-bold text-sm">Brasil (BRL R$)</p>
+                </div>
+                <div class="w-10 h-10 shopee-bg rounded-xl flex items-center justify-center text-white shadow-lg">
+                    <span class="font-bold">R$</span>
+                </div>
+            </div>
+        </header>
 
-<body>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Configuração (Esquerda) -->
+            <section class="lg:col-span-5 space-y-6">
+                <div class="glass-card p-8 rounded-[2.5rem] shadow-xl">
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shopee-brand" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.533 1.533 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-800">Parâmetros de Custo</h3>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold text-slate-400 uppercase ml-1">Custo Fornecedor</label>
+                                <div class="relative group">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">R$</span>
+                                    <input type="number" id="custo" placeholder="0,00" step="0.01" oninput="calcular()"
+                                        class="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-orange-500/10 focus:border-[#ee4d2d] outline-none transition-all text-slate-800 font-bold text-lg">
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold text-slate-400 uppercase ml-1">Margem Lucro (%)</label>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">%</span>
+                                    <input type="number" id="lucro_percent" placeholder="20" oninput="calcular()"
+                                        class="w-full pl-10 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-orange-500/10 focus:border-[#ee4d2d] outline-none transition-all text-slate-800 font-bold text-lg">
+                                </div>
+                            </div>
+                        </div>
 
-  <header>
-    Calculadora Shopee & Dogama
-  </header>
+                        <div class="space-y-3">
+                            <label class="text-xs font-bold text-slate-400 uppercase ml-1">Estratégia de Risco</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="setStrategy('protegido')" id="btn-protegido" class="strategy-btn active py-3 px-4 rounded-xl border border-slate-200 font-bold text-[10px] uppercase flex items-center justify-center gap-2">
+                                    🛡️ Protegido
+                                </button>
+                                <button onclick="setStrategy('equilibrado')" id="btn-equilibrado" class="strategy-btn py-3 px-4 rounded-xl border border-slate-200 font-bold text-[10px] uppercase flex items-center justify-center gap-2 bg-white text-slate-600">
+                                    ⚖️ Equilibrado
+                                </button>
+                                <button onclick="setStrategy('agressivo')" id="btn-agressivo" class="strategy-btn py-3 px-4 rounded-xl border border-slate-200 font-bold text-[10px] uppercase flex items-center justify-center gap-2 bg-white text-slate-600">
+                                    🔥 Agressivo
+                                </button>
+                                <button onclick="setStrategy('manual')" id="btn-manual" class="strategy-btn py-3 px-4 rounded-xl border border-slate-200 font-bold text-[10px] uppercase flex items-center justify-center gap-2 bg-white text-slate-600">
+                                    ✏️ Manual
+                                </button>
+                            </div>
+                        </div>
 
-  <div class="container">
+                        <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-100">
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Devolução (R$)</label>
+                                <input type="number" id="input-devolucao" value="10" oninput="calcular()" disabled
+                                    class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-500 font-bold text-sm disabled:opacity-50">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Risco Op. (R$)</label>
+                                <input type="number" id="input-risco" value="5" oninput="calcular()" disabled
+                                    class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-500 font-bold text-sm disabled:opacity-50">
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    <div class="box">
-      <h3>Custo no Fornecedor</h3>
-      <label>Valor do produto (R$)</label>
-      <input type="number" id="custoProduto" value="68.90" step="0.01">
+                <!-- Bloco de Taxas Fixas Atualizado -->
+                <div class="bg-slate-900 rounded-[2rem] p-6 text-white shadow-lg overflow-hidden relative">
+                    <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-4">Taxas Fixas Shopee/Dogama</h4>
+                    <div class="space-y-4">
+                        <div class="p-3 bg-white/5 rounded-xl border border-white/5">
+                            <p class="text-[10px] text-orange-400 font-bold uppercase mb-1">Shopee (Comissão + Frete)</p>
+                            <p class="text-sm font-bold">20% + R$ 5,00 <span class="text-slate-400 font-normal">sobre venda</span></p>
+                        </div>
+                        <div class="p-3 bg-white/5 rounded-xl border border-white/5">
+                            <p class="text-[10px] text-blue-400 font-bold uppercase mb-1">Dogama (Taxa + Transação)</p>
+                            <p class="text-sm font-bold">3% + R$ 1,99 <span class="text-slate-400 font-normal">sobre custo</span></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Resultados (Direita) -->
+            <section id="display-resultados" class="lg:col-span-7 space-y-6 opacity-0 pointer-events-none transition-all duration-500">
+                
+                <!-- Main Price Card -->
+                <div class="bg-white p-10 rounded-[2.5rem] shadow-xl border border-slate-100 text-center relative overflow-hidden">
+                    <div class="absolute top-6 right-6">
+                        <span id="label-estrategia" class="bg-orange-50 text-[#ee4d2d] text-[10px] font-extrabold px-4 py-1.5 rounded-full uppercase tracking-widest border border-orange-100">
+                            Protegido
+                        </span>
+                    </div>
+                    
+                    <p class="text-slate-400 text-xs font-bold uppercase tracking-[0.3em] mb-4">Preço Sugerido de Venda</p>
+                    <div class="flex items-center justify-center gap-2">
+                        <span class="text-3xl font-bold text-slate-300">R$</span>
+                        <h2 id="preco-venda" class="text-7xl font-black text-slate-900 tracking-tighter">0,00</h2>
+                    </div>
+                </div>
+
+                <!-- Breakdown Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Taxas Shopee -->
+                    <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-2 h-6 shopee-bg rounded-full"></div>
+                            <h4 class="font-bold text-slate-800">Taxas Shopee</h4>
+                        </div>
+                        <ul class="space-y-3">
+                            <li class="flex justify-between items-center text-[13px]">
+                                <span class="text-slate-500">Comissão Shopee (14%)</span>
+                                <span id="res-shopee-com-14" class="font-bold text-slate-700">R$ 0,00</span>
+                            </li>
+                            <li class="flex justify-between items-center text-[13px]">
+                                <span class="text-slate-500">Frete Grátis (6%)</span>
+                                <span id="res-shopee-frete-6" class="font-bold text-slate-700">R$ 0,00</span>
+                            </li>
+                            <li class="flex justify-between items-center text-[13px]">
+                                <span class="text-slate-500">Taxa Fixa por Item</span>
+                                <span class="font-bold text-slate-700">R$ 5,00</span>
+                            </li>
+                            <li class="pt-3 border-t border-slate-50 flex justify-between items-center">
+                                <span class="text-xs font-black text-slate-400 uppercase">Total Taxas</span>
+                                <span id="res-shopee-total" class="font-extrabold text-red-500 text-lg">R$ 0,00</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Custos Dogama + Proteção -->
+                    <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-2 h-6 bg-blue-500 rounded-full"></div>
+                            <h4 class="font-bold text-slate-800">Custos Dogama + Proteção</h4>
+                        </div>
+                        <ul class="space-y-3">
+                            <li class="flex justify-between items-center text-[13px]">
+                                <span class="text-slate-500">Custo Base Produto</span>
+                                <span id="res-detalhe-base" class="font-bold text-slate-700">R$ 0,00</span>
+                            </li>
+                            <li class="flex justify-between items-center text-[13px]">
+                                <span class="text-slate-500">Taxa Dogama (3%)</span>
+                                <span id="res-detalhe-dogama" class="font-bold text-slate-700">R$ 0,00</span>
+                            </li>
+                            <li class="flex justify-between items-center text-[13px]">
+                                <span class="text-slate-500">Taxa PIX Transação</span>
+                                <span id="res-detalhe-pix" class="font-bold text-slate-700">R$ 1,99</span>
+                            </li>
+                            <li class="flex justify-between items-center text-[13px]">
+                                <span class="text-slate-500">Média Devolução</span>
+                                <span id="res-detalhe-dev" class="font-bold text-slate-700">R$ 0,00</span>
+                            </li>
+                            <li class="flex justify-between items-center text-[13px]">
+                                <span class="text-slate-500">Risco Operacional</span>
+                                <span id="res-detalhe-risco" class="font-bold text-slate-700">R$ 0,00</span>
+                            </li>
+                            <li class="pt-3 border-t border-slate-50 flex justify-between items-center">
+                                <span id="res-total-label" class="text-xs font-black text-slate-400 uppercase">Custo Total Protegido</span>
+                                <span id="res-custo-protegido" class="font-extrabold text-blue-600 text-lg">R$ 0,00</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Profit Card -->
+                <div class="bg-emerald-600 p-8 rounded-[2.5rem] text-white shadow-xl shadow-emerald-200/50 flex flex-col md:flex-row justify-between items-center gap-6 relative overflow-hidden">
+                    <div class="text-center md:text-left relative z-10">
+                        <p class="text-emerald-100 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Lucro Líquido por Unidade</p>
+                        <h3 id="res-lucro" class="text-4xl font-black">R$ 0,00</h3>
+                    </div>
+                    <div class="h-12 w-px bg-white/20 hidden md:block"></div>
+                    <div class="text-center md:text-right relative z-10">
+                        <p class="text-emerald-100 text-[10px] font-black uppercase tracking-[0.2em] mb-1">ROI Real s/ Venda</p>
+                        <h3 id="res-margem-real" class="text-2xl font-black bg-white/20 px-4 py-1 rounded-2xl">0%</h3>
+                    </div>
+                </div>
+
+            </section>
+        </div>
     </div>
 
-    <div class="box">
-      <h3>Margem Desejada</h3>
-      <label>Margem (%)</label>
-      <input type="number" id="margem" value="15">
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-8 py-4 rounded-3xl shadow-2xl opacity-0 transition-all duration-300 z-50 pointer-events-none flex items-center gap-3">
+        <span id="toast-msg" class="text-sm font-bold tracking-tight"></span>
     </div>
 
-    <div class="box">
-      <button onclick="calcular()">CALCULAR PREÇO</button>
-    </div>
+    <script>
+        let currentStrategy = 'protegido';
 
-    <div class="box">
-      <h3>Preço Ideal de Venda</h3>
-      <div class="result" id="precoVenda">R$ 0,00</div>
-    </div>
+        const strategies = {
+            protegido: { name: 'Protegido', devolucao: 10.00, risco: 5.00, lock: true },
+            equilibrado: { name: 'Equilibrado', devolucao: 5.00, risco: 5.00, lock: true },
+            agressivo: { name: 'Agressivo', devolucao: 0.00, risco: 0.00, lock: true },
+            manual: { name: 'Manual', devolucao: 0.00, risco: 0.00, lock: false }
+        };
 
-  </div>
+        function formatCurrency(value) {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
 
-  <footer>
-    App local • Shopee • Dogama • PWA
-  </footer>
+        function setStrategy(type) {
+            currentStrategy = type;
+            
+            document.querySelectorAll('.strategy-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.add('bg-white', 'text-slate-600');
+            });
+            
+            const activeBtn = document.getElementById(`btn-${type}`);
+            activeBtn.classList.add('active');
+            activeBtn.classList.remove('bg-white', 'text-slate-600');
+            
+            const inputDev = document.getElementById('input-devolucao');
+            const inputRisco = document.getElementById('input-risco');
+            const label = document.getElementById('label-estrategia');
+            
+            inputDev.value = strategies[type].devolucao;
+            inputRisco.value = strategies[type].risco;
+            inputDev.disabled = strategies[type].lock;
+            inputRisco.disabled = strategies[type].lock;
+            
+            label.innerText = strategies[type].name.toUpperCase();
+            
+            document.getElementById('res-total-label').innerText = `Custo Total ${strategies[type].name}`;
 
-  <script>
-    function calcular() {
-      const custo = parseFloat(document.getElementById('custoProduto').value) || 0;
-      const margem = parseFloat(document.getElementById('margem').value) || 0;
+            calcular();
+        }
 
-      // Taxas
-      const taxaShopee = (custo * 0.20) + 5;
-      const taxaDogama = (custo * 0.03) + 1.99;
-      const protecao = 15;
+        function calcular() {
+            const custoBase = parseFloat(document.getElementById('custo').value) || 0;
+            const margemDesejada = (parseFloat(document.getElementById('lucro_percent').value) || 0) / 100;
+            const devValue = parseFloat(document.getElementById('input-devolucao').value) || 0;
+            const riscoValue = parseFloat(document.getElementById('input-risco').value) || 0;
 
-      const custoTotal = custo + taxaShopee + taxaDogama + protecao;
-      const precoVenda = custoTotal * (1 + margem / 100);
+            if (custoBase <= 0) {
+                document.getElementById('display-resultados').classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+                return;
+            }
 
-      document.getElementById('precoVenda').innerText =
-        precoVenda.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    }
-  </script>
+            // --- Constantes das Taxas ---
+            const comissaoPadrao = 0.14;
+            const freteGratisExtra = 0.06;
+            const comissaoTotal = comissaoPadrao + freteGratisExtra; // 20%
+            const fixoShopee = 5.00;
+            
+            const taxaDogamaPerc = 0.03;
+            const taxaPixFixa = 1.99;
 
+            // --- Cálculo do Custo Protegido (Incide sobre custo) ---
+            const taxaDogamaValor = custoBase * taxaDogamaPerc;
+            const custoProtegido = custoBase + taxaDogamaValor + taxaPixFixa + devValue + riscoValue;
+
+            // --- Cálculo do Preço de Venda (Incide sobre venda) ---
+            const lucroObjetivo = custoProtegido * margemDesejada;
+            const denominador = 1 - comissaoTotal;
+
+            if (denominador <= 0) return;
+
+            const precoVenda = (custoProtegido + lucroObjetivo + fixoShopee) / denominador;
+
+            // --- Detalhamento Taxas Shopee ---
+            const valComissao14 = precoVenda * comissaoPadrao;
+            const valFrete6 = precoVenda * freteGratisExtra;
+            const totalShopee = valComissao14 + valFrete6 + fixoShopee;
+
+            // --- Resultados Financeiros ---
+            const lucroLiquido = precoVenda - totalShopee - custoProtegido;
+            const margemReal = (lucroLiquido / precoVenda) * 100;
+
+            // --- ATUALIZAÇÃO UI ---
+            document.getElementById('preco-venda').innerText = precoVenda.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            
+            document.getElementById('res-shopee-com-14').innerText = formatCurrency(valComissao14);
+            document.getElementById('res-shopee-frete-6').innerText = formatCurrency(valFrete6);
+            document.getElementById('res-shopee-total').innerText = formatCurrency(totalShopee);
+            
+            document.getElementById('res-detalhe-base').innerText = formatCurrency(custoBase);
+            document.getElementById('res-detalhe-dogama').innerText = formatCurrency(taxaDogamaValor);
+            document.getElementById('res-detalhe-pix').innerText = formatCurrency(taxaPixFixa);
+            document.getElementById('res-detalhe-dev').innerText = formatCurrency(devValue);
+            document.getElementById('res-detalhe-risco').innerText = formatCurrency(riscoValue);
+            document.getElementById('res-custo-protegido').innerText = formatCurrency(custoProtegido);
+
+            document.getElementById('res-lucro').innerText = formatCurrency(lucroLiquido);
+            document.getElementById('res-margem-real').innerText = (isNaN(margemReal) ? 0 : margemReal).toFixed(1) + "%";
+
+            const display = document.getElementById('display-resultados');
+            display.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            t.classList.replace('opacity-0', 'opacity-100');
+            setTimeout(() => t.classList.replace('opacity-100', 'opacity-0'), 3000);
+        }
+
+        window.onload = () => {
+            setStrategy('protegido');
+        };
+    </script>
 </body>
 </html>
