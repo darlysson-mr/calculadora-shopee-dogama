@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+  <title>Calculadora Shopee & Dogama</title>
+
+  <!-- Manifest -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ee4d2d">
+
+  <!-- Ícone fallback -->
+  <link rel="icon" href="icon-192.png">
+
+  <!-- Estilo simples -->
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f5f5;
+    }
+
+    header {
+      background: #ee4d2d;
+      color: #fff;
+      padding: 16px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .container {
+      padding: 16px;
+      max-width: 480px;
+      margin: auto;
+    }
+
+    .box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .box h3 {
+      margin: 0 0 10px;
+      font-size: 15px;
+      color: #333;
+    }
+
+    label {
+      font-size: 13px;
+      color: #555;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 4px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #ee4d2d;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .result {
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      color: #1a7f37;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 11px;
+      color: #888;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    Calculadora Shopee & Dogama
+  </header>
+
+  <div class="container">
+
+    <div class="box">
+      <h3>Custo no Fornecedor</h3>
+      <label>Valor do produto (R$)</label>
+      <input type="number" id="custoProduto" value="68.90" step="0.01">
+    </div>
+
+    <div class="box">
+      <h3>Margem Desejada</h3>
+      <label>Margem (%)</label>
+      <input type="number" id="margem" value="15">
+    </div>
+
+    <div class="box">
+      <button onclick="calcular()">CALCULAR PREÇO</button>
+    </div>
+
+    <div class="box">
+      <h3>Preço Ideal de Venda</h3>
+      <div class="result" id="precoVenda">R$ 0,00</div>
+    </div>
+
+  </div>
+
+  <footer>
+    App local • Shopee • Dogama • PWA
+  </footer>
+
+  <script>
+    function calcular() {
+      const custo = parseFloat(document.getElementById('custoProduto').value) || 0;
+      const margem = parseFloat(document.getElementById('margem').value) || 0;
+
+      // Taxas
+      const taxaShopee = (custo * 0.20) + 5;
+      const taxaDogama = (custo * 0.03) + 1.99;
+      const protecao = 15;
+
+      const custoTotal = custo + taxaShopee + taxaDogama + protecao;
+      const precoVenda = custoTotal * (1 + margem / 100);
+
+      document.getElementById('precoVenda').innerText =
+        precoVenda.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+  </script>
+
+</body>
+</html>
