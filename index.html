@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calculadora Shopee & Dogama</title>
+    <title>Calculadora Shopee & Dogama Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -140,7 +140,6 @@
                     </div>
                 </div>
 
-                <!-- Bloco de Taxas Fixas -->
                 <div class="bg-slate-900 rounded-[2rem] p-6 text-white shadow-lg overflow-hidden relative">
                     <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-4">Taxas Fixas Shopee/Dogama</h4>
                     <div class="space-y-4">
@@ -159,7 +158,6 @@
             <!-- Resultados (Direita) -->
             <section id="display-resultados" class="lg:col-span-7 space-y-6 opacity-0 pointer-events-none transition-all duration-500 transform translate-y-4">
                 
-                <!-- Main Price Card -->
                 <div class="bg-white p-8 md:p-10 rounded-[2rem] md:rounded-[2.5rem] shadow-xl border border-slate-100 text-center relative overflow-hidden">
                     <div class="absolute top-4 right-4 md:top-6 md:right-6">
                         <span id="label-estrategia" class="bg-orange-50 text-[#ee4d2d] text-[9px] md:text-[10px] font-extrabold px-3 py-1 md:px-4 md:py-1.5 rounded-full uppercase tracking-widest border border-orange-100">
@@ -174,7 +172,6 @@
                     </div>
                 </div>
 
-                <!-- Breakdown Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Taxas Shopee -->
                     <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
@@ -197,11 +194,16 @@
                             </li>
                             <li id="li-extra-cpf" class="flex justify-between items-center text-[12px] md:text-[13px] hidden">
                                 <span class="text-slate-500">Taxa Extra CPF</span>
-                                <span class="font-bold text-slate-700">R$ 3,00</span>
+                                <span id="res-shopee-cpf-val" class="font-bold text-slate-700">R$ 3,00</span>
                             </li>
-                            <li class="pt-3 border-t border-slate-50 flex justify-between items-center">
-                                <span class="text-[10px] font-black text-slate-400 uppercase">Total Taxas</span>
-                                <span id="res-shopee-total" class="font-extrabold text-red-500 text-base md:text-lg">R$ 0,00</span>
+                            <li class="pt-3 border-t border-slate-50 flex flex-col items-end">
+                                <div class="flex justify-between w-full items-center">
+                                    <span class="text-[10px] font-black text-slate-400 uppercase">Total Taxas</span>
+                                    <span id="res-shopee-total" class="font-extrabold text-red-500 text-base md:text-lg">R$ 0,00</span>
+                                </div>
+                                <div id="faixa-info-container" class="mt-1 text-right">
+                                    <!-- Dynamic content here -->
+                                </div>
                             </li>
                         </ul>
                     </div>
@@ -238,15 +240,18 @@
                 </div>
 
                 <!-- Profit Card -->
-                <div class="bg-emerald-600 p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] text-white shadow-xl flex flex-col sm:flex-row justify-between items-center gap-4 md:gap-6 relative overflow-hidden">
-                    <div class="text-center sm:text-left relative z-10">
+                <div class="bg-emerald-600 p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] text-white shadow-xl flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6 relative overflow-hidden">
+                    <div class="text-center md:text-left relative z-10">
                         <p class="text-emerald-100 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Lucro Líquido</p>
                         <h3 id="res-lucro" class="text-3xl md:text-4xl font-black">R$ 0,00</h3>
                     </div>
-                    <div class="h-px w-full sm:h-12 sm:w-px bg-white/20"></div>
-                    <div class="text-center sm:text-right relative z-10">
+                    <div class="h-px w-full md:h-12 md:w-px bg-white/20"></div>
+                    <div class="text-center md:text-right relative z-10">
                         <p class="text-emerald-100 text-[10px] font-black uppercase tracking-[0.2em] mb-1">ROI s/ Venda</p>
-                        <h3 id="res-margem-real" class="text-xl md:text-2xl font-black bg-white/20 px-4 py-1 rounded-2xl inline-block sm:block">0%</h3>
+                        <h3 id="res-margem-real" class="text-xl md:text-2xl font-black bg-white/20 px-4 py-1 rounded-2xl inline-block">0%</h3>
+                    </div>
+                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:right-8 opacity-50">
+                        <p id="res-sugestao" class="text-[10px] font-bold text-white uppercase italic text-center md:text-right"></p>
                     </div>
                 </div>
 
@@ -318,7 +323,7 @@
                     fixo: 20.00,
                     titulo: "14% + R$20",
                     faixa: "R$100 a R$199,99",
-                    cor: "text-green-600"
+                    cor: "text-emerald-600"
                 };
             }
             return { 
@@ -326,7 +331,7 @@
                 fixo: 26.00,
                 titulo: "14% + R$26",
                 faixa: "Acima de R$200",
-                cor: "text-green-600"
+                cor: "text-emerald-600"
             };
         }
 
@@ -344,66 +349,93 @@
                 return;
             }
 
+            // Custos Dogama
             const taxaDogamaPerc = 0.03;
             const taxaPixFixa = 1.99;
             const taxaDogamaValor = custoBase * taxaDogamaPerc;
-            const custoProtegido = custoBase + taxaDogamaValor + taxaPixFixa + devValue + riscoValue;
+            const custoOperacional = custoBase + taxaDogamaValor + taxaPixFixa + devValue + riscoValue;
 
+            // Variáveis Extras
             const taxaExtraCPF = applyCPF ? 3.00 : 0.00;
             const percentualCampanha = applyCampanha ? 0.025 : 0.00;
-            const lucroObjetivo = custoProtegido * margemDesejada;
+            const lucroObjetivo = custoOperacional * margemDesejada;
 
+            // Cálculo Iterativo para encontrar o Preço de Venda ideal (Break-even + Margem)
             let percentualComissao = 0.20;
             let fixoShopee_loop = 4.00;
-
-            let precoVenda = (custoProtegido + lucroObjetivo + fixoShopee_loop + taxaExtraCPF) / (1 - percentualComissao - percentualCampanha);
+            let precoVenda = (custoOperacional + lucroObjetivo + fixoShopee_loop + taxaExtraCPF) / (1 - percentualComissao - percentualCampanha);
             
+            // Loop para estabilizar o preço baseado na faixa de impostos
             for (let i = 0; i < 5; i++) {
                 let shopee = getShopeeTaxes(precoVenda);
                 percentualComissao = shopee.perc;
                 fixoShopee_loop = shopee.fixo;
                 let divisor = 1 - percentualComissao - percentualCampanha;
                 if (divisor <= 0) break;
-                precoVenda = (custoProtegido + lucroObjetivo + fixoShopee_loop + taxaExtraCPF) / divisor;
+                precoVenda = (custoOperacional + lucroObjetivo + fixoShopee_loop + taxaExtraCPF) / divisor;
             }
 
             const faixaInfo = getShopeeTaxes(precoVenda);
-
             const valorComissao = precoVenda * percentualComissao;
             const valorCampanha = precoVenda * percentualCampanha;
             const totalShopee = valorComissao + valorCampanha + fixoShopee_loop + taxaExtraCPF;
 
-            const lucroLiquido = precoVenda - totalShopee - custoProtegido;
+            const lucroLiquido = precoVenda - totalShopee - custoOperacional;
             const margemReal = (lucroLiquido / precoVenda) * 100;
+            const lucroSobreCusto = (lucroLiquido / custoOperacional) * 100;
 
+            // UI Update - Preço
             const precoElement = document.getElementById('preco-venda');
             precoElement.innerText = precoVenda.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-            precoElement.classList.remove("text-red-600","text-yellow-500","text-green-600");
+            precoElement.classList.remove("text-red-600","text-yellow-500","text-emerald-600");
             precoElement.classList.add(faixaInfo.cor);
 
+            // UI Update - Detalhamento Shopee
             document.getElementById('label-comissao').innerText = `Comissão (${(percentualComissao * 100).toFixed(0)}%)`;
             document.getElementById('res-shopee-com-val').innerText = formatCurrency(valorComissao);
             document.getElementById('res-shopee-fixo-val').innerText = formatCurrency(fixoShopee_loop);
+            document.getElementById('res-shopee-total').innerText = formatCurrency(totalShopee);
 
-            document.getElementById('res-shopee-total').innerHTML = `
-                ${formatCurrency(totalShopee)}<br>
-                <span class="text-xs font-semibold text-slate-500">
-                Faixa aplicada: ${faixaInfo.titulo}
-                </span><br>
-                <span class="text-[10px] text-slate-400">
-                ${faixaInfo.faixa}
-                </span>
+            // Extra CPF Visibility
+            if(applyCPF) {
+                document.getElementById('li-extra-cpf').classList.remove('hidden');
+            } else {
+                document.getElementById('li-extra-cpf').classList.add('hidden');
+            }
+
+            // Campanha Visibility
+            if(applyCampanha) {
+                document.getElementById('li-campanha').classList.remove('hidden');
+                document.getElementById('res-shopee-campanha-val').innerText = formatCurrency(valorCampanha);
+            } else {
+                document.getElementById('li-campanha').classList.add('hidden');
+            }
+
+            // Faixa Info
+            document.getElementById('faixa-info-container').innerHTML = `
+                <span class="text-[10px] font-semibold text-slate-500 block">Faixa: ${faixaInfo.titulo}</span>
+                <span class="text-[9px] text-slate-400 uppercase tracking-tighter">${faixaInfo.faixa}</span>
             `;
 
+            // UI Update - Detalhamento Dogama
             document.getElementById('res-detalhe-base').innerText = formatCurrency(custoBase);
             document.getElementById('res-detalhe-dogama').innerText = formatCurrency(taxaDogamaValor);
             document.getElementById('res-detalhe-pix').innerText = formatCurrency(taxaPixFixa);
             document.getElementById('res-detalhe-dev-risco').innerText = formatCurrency(devValue + riscoValue);
-            document.getElementById('res-custo-protegido').innerText = formatCurrency(custoProtegido);
+            document.getElementById('res-custo-protegido').innerText = formatCurrency(custoOperacional);
 
+            // UI Update - Lucro
             document.getElementById('res-lucro').innerText = formatCurrency(lucroLiquido);
             document.getElementById('res-margem-real').innerText = (isNaN(margemReal) ? 0 : margemReal).toFixed(1) + "%";
+
+            // Análise de Saúde Financeira
+            const sugestao = document.getElementById('res-sugestao');
+            let mensagem = "";
+            if(lucroSobreCusto < 15) mensagem = "⚠️ Margem de risco";
+            else if(lucroSobreCusto < 25) mensagem = "⚖️ Equilibrado";
+            else mensagem = "✅ Altamente rentável";
+            
+            sugestao.innerText = `${mensagem} (${lucroSobreCusto.toFixed(1)}% s/ custo)`;
 
             document.getElementById('display-resultados').classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
         }
