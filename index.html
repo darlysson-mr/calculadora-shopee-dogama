@@ -277,23 +277,57 @@
             const activeBtn = document.getElementById(`btn-${type}`);
             activeBtn.classList.add('active');
             activeBtn.classList.remove('bg-white', 'text-slate-600');
+
             const inputDev = document.getElementById('input-devolucao');
             const inputRisco = document.getElementById('input-risco');
             const label = document.getElementById('label-estrategia');
+
             inputDev.value = strategies[type].devolucao;
             inputRisco.value = strategies[type].risco;
             inputDev.disabled = strategies[type].lock;
             inputRisco.disabled = strategies[type].lock;
+
             label.innerText = strategies[type].name.toUpperCase();
             document.getElementById('res-total-label').innerText = `Custo Total ${strategies[type].name}`;
+
             calcular();
         }
 
         function getShopeeTaxes(preco) {
-            if (preco < 80) return { perc: 0.20, fixo: 4.00 };
-            if (preco < 100) return { perc: 0.14, fixo: 16.00 };
-            if (preco < 200) return { perc: 0.14, fixo: 20.00 };
-            return { perc: 0.14, fixo: 26.00 };
+            if (preco < 80) {
+                return { 
+                    perc: 0.20, 
+                    fixo: 4.00,
+                    titulo: "20% + R$4",
+                    faixa: "Até R$79,99",
+                    cor: "text-red-600"
+                };
+            }
+            if (preco < 100) {
+                return { 
+                    perc: 0.14, 
+                    fixo: 16.00,
+                    titulo: "14% + R$16",
+                    faixa: "R$80 a R$99,99",
+                    cor: "text-yellow-500"
+                };
+            }
+            if (preco < 200) {
+                return { 
+                    perc: 0.14, 
+                    fixo: 20.00,
+                    titulo: "14% + R$20",
+                    faixa: "R$100 a R$199,99",
+                    cor: "text-green-600"
+                };
+            }
+            return { 
+                perc: 0.14, 
+                fixo: 26.00,
+                titulo: "14% + R$26",
+                faixa: "Acima de R$200",
+                cor: "text-green-600"
+            };
         }
 
         function calcular() {
@@ -322,7 +356,6 @@
             let percentualComissao = 0.20;
             let fixoShopee_loop = 4.00;
 
-            // chute inicial simples
             let precoVenda = (custoProtegido + lucroObjetivo + fixoShopee_loop + taxaExtraCPF) / (1 - percentualComissao - percentualCampanha);
             
             for (let i = 0; i < 5; i++) {
@@ -334,6 +367,8 @@
                 precoVenda = (custoProtegido + lucroObjetivo + fixoShopee_loop + taxaExtraCPF) / divisor;
             }
 
+            const faixaInfo = getShopeeTaxes(precoVenda);
+
             const valorComissao = precoVenda * percentualComissao;
             const valorCampanha = precoVenda * percentualCampanha;
             const totalShopee = valorComissao + valorCampanha + fixoShopee_loop + taxaExtraCPF;
@@ -341,23 +376,26 @@
             const lucroLiquido = precoVenda - totalShopee - custoProtegido;
             const margemReal = (lucroLiquido / precoVenda) * 100;
 
-            document.getElementById('preco-venda').innerText = precoVenda.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const precoElement = document.getElementById('preco-venda');
+            precoElement.innerText = precoVenda.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            precoElement.classList.remove("text-red-600","text-yellow-500","text-green-600");
+            precoElement.classList.add(faixaInfo.cor);
+
             document.getElementById('label-comissao').innerText = `Comissão (${(percentualComissao * 100).toFixed(0)}%)`;
             document.getElementById('res-shopee-com-val').innerText = formatCurrency(valorComissao);
             document.getElementById('res-shopee-fixo-val').innerText = formatCurrency(fixoShopee_loop);
-            
-            const campLi = document.getElementById('li-campanha');
-            if(applyCampanha) {
-                campLi.classList.remove('hidden');
-                document.getElementById('res-shopee-campanha-val').innerText = formatCurrency(valorCampanha);
-            } else {
-                campLi.classList.add('hidden');
-            }
 
-            const cpfLi = document.getElementById('li-extra-cpf');
-            applyCPF ? cpfLi.classList.remove('hidden') : cpfLi.classList.add('hidden');
+            document.getElementById('res-shopee-total').innerHTML = `
+                ${formatCurrency(totalShopee)}<br>
+                <span class="text-xs font-semibold text-slate-500">
+                Faixa aplicada: ${faixaInfo.titulo}
+                </span><br>
+                <span class="text-[10px] text-slate-400">
+                ${faixaInfo.faixa}
+                </span>
+            `;
 
-            document.getElementById('res-shopee-total').innerText = formatCurrency(totalShopee);
             document.getElementById('res-detalhe-base').innerText = formatCurrency(custoBase);
             document.getElementById('res-detalhe-dogama').innerText = formatCurrency(taxaDogamaValor);
             document.getElementById('res-detalhe-pix').innerText = formatCurrency(taxaPixFixa);
@@ -367,8 +405,7 @@
             document.getElementById('res-lucro').innerText = formatCurrency(lucroLiquido);
             document.getElementById('res-margem-real').innerText = (isNaN(margemReal) ? 0 : margemReal).toFixed(1) + "%";
 
-            const display = document.getElementById('display-resultados');
-            display.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+            document.getElementById('display-resultados').classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
         }
 
         window.onload = () => {
